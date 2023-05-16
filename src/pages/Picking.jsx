@@ -119,8 +119,11 @@ export default function Picking() {
   }
 
   useEffect(() => {
-    const data = pickingCompleted;
-    axios
+    
+    if (pickingCompleted[0]) {
+      console.log("picking completed");
+      const data = pickingCompleted;
+      axios
       .post("https://stock-prod.deno.dev/", data, {
         headers: {
           "Content-Type": "application/json",
@@ -132,6 +135,8 @@ export default function Picking() {
       .catch((error) => {
         console.error(error);
       });
+    }
+    
   }, [pickingCompleted]);
 
   return (
