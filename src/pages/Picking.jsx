@@ -119,14 +119,11 @@ export default function Picking() {
   }
 
   useEffect(() => {
+    const data = pickingCompleted;
     axios
-      .post("https://stock-prod.deno.dev/", pickingCompleted, {
+      .post("https://stock-prod.deno.dev/", data, {
         headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers":
-            "POST, GET, PUT, DELETE, OPTIONS, HEAD, Authorization, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin",
           "Content-Type": "application/json",
-          "mode": "no-cors"
         },
       })
       .then((response) => {
