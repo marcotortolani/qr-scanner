@@ -2,6 +2,7 @@ import { useState, useEffect } from "preact/hooks";
 import { useNavigate } from "react-router-dom";
 import QrReader from "react-web-qr-reader";
 import useLocalStorage from "../helpers/useLocalStorage";
+import useSound from "use-sound";
 
 const elementPicked = {
   sku: "",
@@ -20,14 +21,14 @@ const pickingCompleted = {
 };
 
 const date = new Date();
-
 const DATE = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-
 const TIME_INITIAL = `${date.getHours()}:${date.getMinutes()}`;
 
 export default function Picking() {
   const delay = 500;
 
+  const [scanOkSound] = useSound("/sounds/scanner-beep.mp3");
+  const [scanErrorSound] = useSound("/sounds/8bit-error.mp3");
   const navigate = useNavigate();
   const [pickingStored, setPickingStored] = useLocalStorage(
     "pickingStored",
@@ -47,6 +48,7 @@ export default function Picking() {
 
   const handleScan = (result) => {
     if (result) {
+      scanOkSound();
       setResult(result.data);
       if (
         result.data.split("")[0] === "T" ||
