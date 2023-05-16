@@ -5,7 +5,7 @@ import useLocalStorage from "../helpers/useLocalStorage";
 import useSound from "use-sound";
 
 //import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
-import axios from 'redaxios';
+import axios from "redaxios";
 
 const elementPicked = {
   sku: "",
@@ -120,9 +120,9 @@ export default function Picking() {
 
   useEffect(() => {
     axios
-      .post("https://stock-prod.deno.dev/", {
-        pickingCompleted,
-      })
+      .post("https://stock-prod.deno.dev/", 
+        pickingCompleted
+      )
       .then((response) => {
         console.log(response);
       });
