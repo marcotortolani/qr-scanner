@@ -5,7 +5,7 @@ import "./app.css";
 
 import Header from "./components/Header";
 import Home from "./pages/Home";
-import EnterData from "./pages/EnterData";
+import Picking from "./pages/Picking";
 
 export function App() {
   return (
@@ -15,7 +15,7 @@ export function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/enter-data" element={<EnterData />} />
+          <Route path="/picking" element={<Picking />} />
         </Routes>
       </div>
     </HashRouter>
