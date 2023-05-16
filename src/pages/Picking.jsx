@@ -111,19 +111,9 @@ export default function Picking() {
     };
     setPickingCompleted(newPickingCompleted);
 
-    /*
-    setPickingStored([]);
-    setPickingCompleted([]);
-    navigate("/");
-    */
-  }
-
-  useEffect(() => {
-    
-    if (pickingCompleted[0]) {
-      console.log("picking completed");
-      const data = pickingCompleted;
-      axios
+    console.log("picking completed");
+    const data = pickingCompleted;
+    axios
       .post("https://stock-prod.deno.dev/", data, {
         headers: {
           "Content-Type": "application/json",
@@ -135,8 +125,30 @@ export default function Picking() {
       .catch((error) => {
         console.error(error);
       });
+    /*
+    setPickingStored([]);
+    setPickingCompleted([]);
+    navigate("/");
+    */
+  }
+
+  useEffect(() => {
+    if (pickingCompleted) {
+      // console.log("picking completed");
+      // const data = pickingCompleted;
+      // axios
+      // .post("https://stock-prod.deno.dev/", data, {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // })
+      // .then((response) => {
+      //   console.log(response.data);
+      // })
+      // .catch((error) => {
+      //   console.error(error);
+      // });
     }
-    
   }, [pickingCompleted]);
 
   return (
