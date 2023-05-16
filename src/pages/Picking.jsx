@@ -1,4 +1,5 @@
 import { useState, useEffect } from "preact/hooks";
+import { useNavigate } from "react-router-dom";
 import QrReader from "react-web-qr-reader";
 import useLocalStorage from "../helpers/useLocalStorage";
 
@@ -15,23 +16,7 @@ const pickingCompleted = {
   timeFinish: "",
   cart: 0,
   name: "",
-  elementsPicked: [
-    {
-      sku: "",
-      location: "",
-      amount: 0,
-    },
-    {
-      sku: "",
-      location: "",
-      amount: 0,
-    },
-    {
-      sku: "",
-      location: "",
-      amount: 0,
-    },
-  ],
+  elementsPicked: [],
 };
 
 const date = new Date();
@@ -40,19 +25,15 @@ const DATE = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
 const TIME_INITIAL = `${date.getHours()}:${date.getMinutes()}`;
 
-export default function EnterData() {
+export default function Picking() {
   const delay = 500;
 
-  const previewStyle = {
-    height: 240,
-    width: 320,
-  };
-
+  const navigate = useNavigate();
   const [pickingStored, setPickingStored] = useLocalStorage(
     "pickingStored",
     []
   );
-  const [typeMovement, setTypeMovement] = useLocalStorage("typeMovement",);
+  const [typeMovement, setTypeMovement] = useLocalStorage("typeMovement");
   const [user, setUser] = useLocalStorage("userData");
   const [pickingCompleted, setPickingCompleted] = useLocalStorage(
     "pickingCompleted",
@@ -60,26 +41,9 @@ export default function EnterData() {
   );
 
   const [result, setResult] = useState("Sin resultado");
-  //   const [currentDate, setCurrentDate] = useState(DATE);
-  //   const [timeInitial, setTimeInitial] = useState(TIME_INITIAL);
   const [skuData, setSkuData] = useState("");
   const [locData, setLocData] = useState("");
   const [amountInput, setAmountInput] = useState(0);
-
-  //   useEffect(() => {
-
-  //     if (!dataStored[0]) {
-  //       console.log("no existe data");
-  //       setDataStored(dataUser);
-  //     } else if (dataStored[0].user !== user || dataStored[0].cart !== cart) {
-  //       const newDataStored = [...dataStored, dataUser];
-  //       setDataStored(newDataStored);
-  //     }
-  //   }, []);
-
-  //   setResult("TBHOG217");
-  //   console.log("result original:", result);
-  //   console.log("result filtrado: ", result.split(""));
 
   const handleScan = (result) => {
     if (result) {
@@ -104,7 +68,7 @@ export default function EnterData() {
     e.preventDefault();
     if (e.target.value > 0) {
       setAmountInput(e.target.value);
-    }else{
+    } else {
       setAmountInput("");
     }
   }
@@ -148,6 +112,12 @@ export default function EnterData() {
     // .then((response) => {
     //   console.log(response);
     // });
+
+    /*
+    setPickingStored([]);
+    setPickingCompleted([]);
+    navigate("/");
+    */
   }
 
   return (
@@ -162,11 +132,10 @@ export default function EnterData() {
       <QrReader
         className="w-[90vw] max-w-[400px] min-w-[260px]  h-auto "
         delay={delay}
-        // style={previewStyle}
         onError={handleError}
         onScan={handleScan}
       />
-      {/* <p className=" w-full h-20 text-white bg-black">{result}</p> */}
+
       <div className=" w-full flex flex-col gap-1 ">
         <h3 className=" h-10 flex items-center text-white text-center text-md bg-black">
           SKU Hijo: {skuData}
@@ -175,10 +144,7 @@ export default function EnterData() {
           Ubicación: {locData}
         </h3>
       </div>
-      {/* <span className=" w-full h-10 text-white text-lg font-extrabold bg-black">
-        {result}
-      </span> */}
-
+      
       <div className="flex items-center gap-2">
         <input
           className=" w-32 px-0 pb-2 pt-2.5  text-center text-lg font-medium rounded-3xl"
@@ -199,7 +165,7 @@ export default function EnterData() {
           className=" inline-block rounded-3xl bg-primary px-6 pb-2 pt-2.5 text-md font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
         dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] 
         dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
-        bg-blue-800 disabled:bg-gray-500 disabled:shadow-none disabled:text-gray-700"
+        bg-blue-800 disabled:bg-gray-500 disabled:shadow-none disabled:text-gray-400"
         >
           Cargar
         </button>
