@@ -136,11 +136,18 @@ export default function Picking() {
 
   return (
     <main className="h-full mt-2 p-x-4 flex flex-col items-center justify-around gap-2">
-      <div className="flex items-center gap-5">
-        <h1>
-          {user.name} - Carro: {user.cart}
-        </h1>
-        <h5>{DATE}</h5>
+      <div className="flex items-center gap-10">
+        <div className="flex items-center gap-2">
+          <h1 className=" text-lg font-bold">{user.name}</h1>
+
+          {user.cart && (
+            <>
+              <span>-</span>
+              <h2 className=" text-lg font-bold">Carro: {user.cart}</h2>
+            </>
+          )}
+        </div>
+        <h5 className="text-sm">{DATE}</h5>
       </div>
 
       <QrReader
@@ -150,11 +157,11 @@ export default function Picking() {
         onScan={handleScan}
       />
 
-      <div className=" w-full flex flex-col gap-1 ">
-        <h3 className=" h-10 flex items-center text-white text-center text-md bg-black">
-          SKU Hijo: {skuData}
+      <div className=" w-[95vw] flex flex-col gap-1 ">
+        <h3 className=" h-10 px-2 flex items-center text-white text-center text-sm bg-black rounded-full">
+          SKU Hijo: <span className="text-md">{skuData}</span>
         </h3>
-        <h3 className="  h-10 flex items-center text-white text-center text-md bg-black">
+        <h3 className=" h-10 px-2 flex items-center text-white text-center text-md bg-black rounded-full">
           Ubicación: {locData}
         </h3>
       </div>
