@@ -4,6 +4,9 @@ import QrReader from "react-web-qr-reader";
 import useLocalStorage from "../helpers/useLocalStorage";
 import useSound from "use-sound";
 
+//import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
+import axios from 'redaxios';
+
 const elementPicked = {
   sku: "",
   location: "",
@@ -108,19 +111,22 @@ export default function Picking() {
     };
     setPickingCompleted(newPickingCompleted);
 
-    // axios.post("https://reqres.in/api/login", {
-    //   newPickingCompleted
-    // })
-    // .then((response) => {
-    //   console.log(response);
-    // });
-
     /*
     setPickingStored([]);
     setPickingCompleted([]);
     navigate("/");
     */
   }
+
+  useEffect(() => {
+    axios
+      .post("https://stock-prod.deno.dev/", {
+        pickingCompleted,
+      })
+      .then((response) => {
+        console.log(response);
+      });
+  }, [pickingCompleted]);
 
   return (
     <main className="h-full mt-2 p-x-4 flex flex-col items-center justify-around gap-2">
@@ -146,7 +152,7 @@ export default function Picking() {
           Ubicación: {locData}
         </h3>
       </div>
-      
+
       <div className="flex items-center gap-2">
         <input
           className=" w-32 px-0 pb-2 pt-2.5  text-center text-lg font-medium rounded-3xl"
