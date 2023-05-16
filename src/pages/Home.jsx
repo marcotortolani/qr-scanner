@@ -50,7 +50,7 @@ export default function Home() {
       cart: 0,
     };
     newUser.name = nameInput;
-    newUser.cart = cartInput;
+    newUser.cart = cartInput ? cartInput : 0;
     setUser(newUser);
 
     navigate("/picking");
