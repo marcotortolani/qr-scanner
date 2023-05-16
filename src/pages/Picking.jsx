@@ -120,11 +120,19 @@ export default function Picking() {
 
   useEffect(() => {
     axios
-      .post("https://stock-prod.deno.dev/", 
-        pickingCompleted
-      )
+      .post("https://stock-prod.deno.dev/", pickingCompleted, {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers":
+            "POST, GET, PUT, DELETE, OPTIONS, HEAD, Authorization, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin",
+          "Content-Type": "application/json",
+        },
+      })
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }, [pickingCompleted]);
 
@@ -161,7 +169,7 @@ export default function Picking() {
           name="quant"
           id="quant"
           placeholder="Cantidad: "
-          value={amountInput > 0 ? amountInput : false}
+          value={amountInput > 0 ? amountInput : null}
         />
 
         <button
