@@ -103,8 +103,8 @@ export default function Picking() {
     setLocData("");
     setAmountInput(0);
   }
-  /*
-  const submitData1 = async (event) => {
+  
+  const submitData = async (event) => {
     const date = new Date();
     const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
 
@@ -132,47 +132,15 @@ export default function Picking() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
+      })
+      .catch((err)=>{
+        console.log(err);
       });
   };
 
-  */
+  
 
-  const submitData = async (event) => {
-    const date = new Date();
-    const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
-
-    const dataToRequest = {
-      typeMovement: typeMovement,
-      date: DATE,
-      timeInitial: TIME_INITIAL,
-      timeFinish: TIME_FINISH,
-      cart: user.cart,
-      name: user.name,
-      elementsPicked: pickingStored,
-    };
-    //setPickingCompleted(dataToRequest);
-
-    console.log("data a enviar: ", dataToRequest);
-
-    try {
-      const { data } = await axios.post(
-        "https://stock-qrs.deno.dev/",
-        dataToRequest,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          mode: "no-cors",
-        }
-      );
-
-      if (data) {
-        console.log(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  
 
   const submitDataHandler = useCallback(debounce(submitData, 300), []);
 
