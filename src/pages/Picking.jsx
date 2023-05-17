@@ -7,6 +7,13 @@ import axios from "redaxios";
 import useSound from "use-sound";
 
 //import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
+const date = new Date();
+const DATE = `${date.getFullYear()}-${
+  date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth()
+}-${date.getDate()}`;
+const TIME_INITIAL = `${date.getHours()}:${
+  date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+}`;
 
 const elementPicked = {
   sku: "",
@@ -14,7 +21,7 @@ const elementPicked = {
   amount: 0,
 };
 
-const pickingCompleted = {
+const pickingCompletedInitial = {
   typeMovement: "",
   date: "",
   timeInitial: "",
@@ -23,16 +30,6 @@ const pickingCompleted = {
   name: "",
   elementsPicked: [],
 };
-
-const date = new Date();
-const DATE = `${date.getFullYear()}-${
-  date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth()
-}-${date.getDate()}`;
-const TIME_INITIAL = `${date.getHours()}:${
-  date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
-}`;
-console.log(DATE);
-console.log(TIME_INITIAL);
 
 export default function Picking() {
   const delay = 500;
@@ -43,15 +40,29 @@ export default function Picking() {
 
   const [typeMovement, setTypeMovement] = useLocalStorage("typeMovement");
   const [user, setUser] = useLocalStorage("userData");
-  const [pickingStored, setPickingStored] = useLocalStorage(
-    "pickingStored",
-    []
-  );
-  const [pickingCompleted, setPickingCompleted] = useLocalStorage(
-    "pickingCompleted",
-    []
-  );
+  // const [pickingStored, setPickingStored] = useLocalStorage(
+  //   "pickingStored",
+  //   []
+  // );
 
+  // const [pickingCompleted, setPickingCompleted] = useLocalStorage(
+  //   "pickingCompleted",
+  //   []
+  // );
+  const pickingCompletedInitial = {
+    date: DATE,
+    timeInitial: TIME_INITIAL,
+    timeFinish: "",
+    name: user.name,
+    cart: user.cart,
+    typeMovement: typeMovement,
+    elementsPicked: [],
+  };
+
+  const [pickingStored, setPickingStored] = useState([]);
+  const [pickingCompleted, setPickingCompleted] = useState(
+    pickingCompletedInitial
+  );
   const [result, setResult] = useState("Sin resultado");
   const [skuData, setSkuData] = useState("");
   const [locData, setLocData] = useState("");
@@ -85,6 +96,13 @@ export default function Picking() {
       setAmountInput(0);
     }
   }
+  useEffect(() => {
+    const newPickingCompleted = pickingCompleted;
+    if (pickingStored.length > 0) {
+      newPickingCompleted.elementsPicked = pickingStored;
+      setPickingCompleted(newPickingCompleted);
+    }
+  }, [pickingStored]);
 
   function handleStoreData() {
     const newElementPicked = {
@@ -96,28 +114,21 @@ export default function Picking() {
     newElementPicked.location = locData;
     newElementPicked.amount = amountInput;
 
-    const newData = [...pickingStored, newElementPicked];
-    setPickingStored(newData);
+    const newPickingStored = [...pickingStored, newElementPicked];
+    console.log("nueva data cargada: ", newPickingStored);
+    setPickingStored(newPickingStored);
 
     setSkuData("");
     setLocData("");
     setAmountInput(0);
   }
-  
+
   const submitData = async (event) => {
     const date = new Date();
     const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
 
-    const dataToRequest = {
-      typeMovement: typeMovement,
-      date: DATE,
-      timeInitial: TIME_INITIAL,
-      timeFinish: TIME_FINISH,
-      cart: user.cart,
-      name: user.name,
-      elementsPicked: pickingStored,
-    };
-    //setPickingCompleted(dataToRequest);
+    const dataToRequest = pickingCompleted;
+    dataToRequest.timeFinish = TIME_FINISH;
 
     console.log("data a enviar: ", dataToRequest);
 
@@ -133,14 +144,16 @@ export default function Picking() {
       .then((res) => {
         console.log(res);
       })
-      .catch((err)=>{
+      .catch((err) => {
         console.log(err);
       });
+
+    setTimeout(() => {
+      setPickingStored([]);
+      setPickingCompleted({});
+      navigate("/");
+    }, 200);
   };
-
-  
-
-  
 
   const submitDataHandler = useCallback(debounce(submitData, 300), []);
 
@@ -195,12 +208,6 @@ export default function Picking() {
     //   navigate("/");
     // }, 200);
   }, []);
-
-  // useEffect(() => {
-  //   if (pickingCompleted) {
-
-  //   }
-  // }, [pickingCompleted]);
 
   return (
     <main className="h-full mt-2 flex flex-col items-center justify-around gap-2">
