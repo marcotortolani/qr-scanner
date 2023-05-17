@@ -98,27 +98,41 @@ export default function Picking() {
     setAmountInput(0);
   }
 
-  // const submitData = async (event) => {
-  //   const dataReq = pickingCompleted;
+  const submitData = async (event) => {
+    const date = new Date();
+    const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
 
-  //   try {
-  //     const { data } = await axios.post("https://stock-qrs.deno.dev/", dataReq, {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
+    const newPickingCompleted = {
+      typeMovement: typeMovement,
+      date: DATE,
+      timeInitial: TIME_INITIAL,
+      timeFinish: TIME_FINISH,
+      cart: user.cart,
+      name: user.name,
+      elementsPicked: pickingStored,
+    };
+    setPickingCompleted(newPickingCompleted);
+    const dataReq = pickingCompleted;
 
-  //     if (data) {
-  //       setTheData(data);
-  //       console.log(data);
-  //     }
-  //   } catch (error) {
-  //     setError(error);
-  //     console.log(error);
-  //   }
-  // };
+    const res = await fetch("https://stock-qrs.deno.dev/", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataReq),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+      });
+  };
 
-  const submitDataHandler = useCallback(() => {
+  const submitDataHandler = useCallback(
+    debounce(submitData, 300)
+  , []);
+
+  const submitDataHandler1 = useCallback(() => {
     const date = new Date();
     const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
 
@@ -135,28 +149,39 @@ export default function Picking() {
 
     const data = pickingCompleted;
 
-    axios
-      .post("https://stock-prod.deno.dev/", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    debounce(submitData, 300);
 
-    
-    setTimeout(() => {
-  
-      setPickingStored([]);
-      setPickingCompleted([]);
-      navigate("/");
-    
-    }, 200);
-    
+    // axios
+    //   .post("https://stock-prod.deno.dev/", data, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
+
+    // fetch("https://stock-prod.deno.dev/", {
+    //   method: "POST",
+    //   mode: "no-cors",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => {
+    //     console.log(res);
+    //   });
+
+    // setTimeout(() => {
+    //   setPickingStored([]);
+    //   setPickingCompleted([]);
+    //   navigate("/");
+    // }, 200);
   }, []);
 
   // useEffect(() => {
