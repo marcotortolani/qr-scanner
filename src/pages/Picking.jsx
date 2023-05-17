@@ -112,9 +112,9 @@ export default function Picking() {
       elementsPicked: pickingStored,
     };
     setPickingCompleted(newPickingCompleted);
-    const dataReq = pickingCompleted;
+    const dataReq = newPickingCompleted;
 
-    const res = await fetch("https://stock-qrs.deno.dev/", {
+    const res = await fetch("https://stock-prod.deno.dev/", {
       method: "POST",
       mode: "no-cors",
       headers: {
