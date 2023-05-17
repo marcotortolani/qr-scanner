@@ -6,7 +6,6 @@ import debounce from "lodash.debounce";
 import axios from "redaxios";
 import useSound from "use-sound";
 
-//import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
 const date = new Date();
 const DATE = `${date.getFullYear()}-${
   date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth()
@@ -40,15 +39,7 @@ export default function Picking() {
 
   const [typeMovement, setTypeMovement] = useLocalStorage("typeMovement");
   const [user, setUser] = useLocalStorage("userData");
-  // const [pickingStored, setPickingStored] = useLocalStorage(
-  //   "pickingStored",
-  //   []
-  // );
 
-  // const [pickingCompleted, setPickingCompleted] = useLocalStorage(
-  //   "pickingCompleted",
-  //   []
-  // );
   const pickingCompletedInitial = {
     date: DATE,
     timeInitial: TIME_INITIAL,
@@ -115,7 +106,6 @@ export default function Picking() {
     newElementPicked.amount = amountInput;
 
     const newPickingStored = [...pickingStored, newElementPicked];
-    console.log("nueva data cargada: ", newPickingStored);
     setPickingStored(newPickingStored);
 
     setSkuData("");
@@ -130,9 +120,7 @@ export default function Picking() {
     const dataToRequest = pickingCompleted;
     dataToRequest.timeFinish = TIME_FINISH;
 
-    console.log("data a enviar: ", dataToRequest);
-
-    const res = await fetch("https://stock-qrs.deno.dev/", {
+    const data = await fetch("https://stock-qrs.deno.dev/", {
       method: "POST",
       mode: "no-cors",
       headers: {
@@ -152,62 +140,10 @@ export default function Picking() {
       setPickingStored([]);
       setPickingCompleted({});
       navigate("/");
-    }, 200);
+    }, 100);
   };
 
   const submitDataHandler = useCallback(debounce(submitData, 300), []);
-
-  const submitDataHandler1 = useCallback(() => {
-    const date = new Date();
-    const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
-
-    const newPickingCompleted = {
-      typeMovement: typeMovement,
-      date: DATE,
-      timeInitial: TIME_INITIAL,
-      timeFinish: TIME_FINISH,
-      cart: user.cart,
-      name: user.name,
-      elementsPicked: pickingStored,
-    };
-    setPickingCompleted(newPickingCompleted);
-
-    const data = pickingCompleted;
-
-    debounce(submitData, 300);
-
-    // axios
-    //   .post("https://stock-prod.deno.dev/", data, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-
-    // fetch("https://stock-prod.deno.dev/", {
-    //   method: "POST",
-    //   mode: "no-cors",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => {
-    //     console.log(res);
-    //   });
-
-    // setTimeout(() => {
-    //   setPickingStored([]);
-    //   setPickingCompleted([]);
-    //   navigate("/");
-    // }, 200);
-  }, []);
 
   return (
     <main className="h-full mt-2 flex flex-col items-center justify-around gap-2">
