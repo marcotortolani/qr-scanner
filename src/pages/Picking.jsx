@@ -148,7 +148,7 @@ export default function Picking() {
         console.error(error);
       });
 
-    /*
+    
     setTimeout(() => {
   
       setPickingStored([]);
@@ -156,7 +156,7 @@ export default function Picking() {
       navigate("/");
     
     }, 200);
-    */
+    
   }, []);
 
   // useEffect(() => {
