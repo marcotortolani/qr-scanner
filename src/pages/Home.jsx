@@ -105,7 +105,7 @@ export default function Home() {
           id="cart"
           value={cartInput ? cartInput : null}
           disabled={typeMovement === "ingreso"}
-          placeholder="Número de Carro: "
+          placeholder="Número de Picking: "
         />
       )}
 

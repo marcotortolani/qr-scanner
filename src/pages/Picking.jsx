@@ -25,8 +25,14 @@ const pickingCompleted = {
 };
 
 const date = new Date();
-const DATE = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-const TIME_INITIAL = `${date.getHours()}:${date.getMinutes()}`;
+const DATE = `${date.getFullYear()}-${
+  date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth()
+}-${date.getDate()}`;
+const TIME_INITIAL = `${date.getHours()}:${
+  date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+}`;
+console.log(DATE);
+console.log(TIME_INITIAL);
 
 export default function Picking() {
   const delay = 500;
@@ -97,12 +103,12 @@ export default function Picking() {
     setLocData("");
     setAmountInput(0);
   }
-
-  const submitData = async (event) => {
+  /*
+  const submitData1 = async (event) => {
     const date = new Date();
     const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
 
-    const newPickingCompleted = {
+    const dataToRequest = {
       typeMovement: typeMovement,
       date: DATE,
       timeInitial: TIME_INITIAL,
@@ -111,16 +117,17 @@ export default function Picking() {
       name: user.name,
       elementsPicked: pickingStored,
     };
-    setPickingCompleted(newPickingCompleted);
-    const dataReq = newPickingCompleted;
+    //setPickingCompleted(dataToRequest);
 
-    const res = await fetch("https://stock-prod.deno.dev/", {
+    console.log("data a enviar: ", dataToRequest);
+
+    const res = await fetch("https://stock-qrs.deno.dev/", {
       method: "POST",
       mode: "no-cors",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(dataReq),
+      body: JSON.stringify(dataToRequest),
     })
       .then((res) => res.json())
       .then((res) => {
@@ -128,9 +135,46 @@ export default function Picking() {
       });
   };
 
-  const submitDataHandler = useCallback(
-    debounce(submitData, 300)
-  , []);
+  */
+
+  const submitData = async (event) => {
+    const date = new Date();
+    const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
+
+    const dataToRequest = {
+      typeMovement: typeMovement,
+      date: DATE,
+      timeInitial: TIME_INITIAL,
+      timeFinish: TIME_FINISH,
+      cart: user.cart,
+      name: user.name,
+      elementsPicked: pickingStored,
+    };
+    //setPickingCompleted(dataToRequest);
+
+    console.log("data a enviar: ", dataToRequest);
+
+    try {
+      const { data } = await axios.post(
+        "https://stock-qrs.deno.dev/",
+        dataToRequest,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          mode: "no-cors",
+        }
+      );
+
+      if (data) {
+        console.log(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const submitDataHandler = useCallback(debounce(submitData, 300), []);
 
   const submitDataHandler1 = useCallback(() => {
     const date = new Date();
