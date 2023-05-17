@@ -10,7 +10,7 @@ import Picking from "./pages/Picking";
 export function App() {
   return (
     <HashRouter>
-      <div className="w-full flex flex-col items-center justify-center">
+      <div className="w-full h-[95vh] flex flex-col items-center">
         <Header />
 
         <Routes>

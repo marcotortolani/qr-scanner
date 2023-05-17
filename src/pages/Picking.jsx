@@ -143,11 +143,17 @@ export default function Picking() {
     }, 100);
   };
 
+  function handlerButtonHome() {
+    setPickingStored([]);
+    setPickingCompleted({});
+    navigate("/");
+  }
+
   const submitDataHandler = useCallback(debounce(submitData, 300), []);
 
   return (
-    <main className="h-full mt-2 flex flex-col items-center justify-around gap-2">
-      <div className="w-full h-10 p-2 bg-black flex items-end justify-center gap-10 rounded-xl">
+    <main className="h-full mt-2 flex flex-col items-center justify-around gap-0">
+      <div className="w-full max-w-lg h-10 p-2 bg-black flex items-end justify-center gap-10 rounded-xl">
         <div className="flex items-center gap-2">
           <h1 className=" text-lg font-light">{user.name}</h1>
 
@@ -173,18 +179,18 @@ export default function Picking() {
       </div>
 
       <QrReader
-        className="w-[90vw] max-w-[400px] min-w-[260px]  h-auto "
+        className="w-[80vw] max-w-[400px] min-w-[260px]  h-auto "
         delay={delay}
         onError={handleError}
         onScan={handleScan}
       />
 
-      <div className=" w-[95vw] flex flex-col gap-1 ">
-        <h3 className=" h-10 px-2 flex items-center text-white text-center text-sm bg-black rounded-full">
-          SKU Hijo: <span className="text-md">{skuData}</span>
+      <div className=" w-[95vw] flex flex-col items-center gap-1 ">
+        <h3 className=" w-full  max-w-lg h-10 px-2 flex items-center text-white text-center text-sm bg-black rounded-xl">
+          SKU Hijo: <span className=" m-auto text-md">{skuData}</span>
         </h3>
-        <h3 className=" h-10 px-2 flex items-center text-white text-center text-md bg-black rounded-full">
-          Ubicación: {locData}
+        <h3 className=" w-full  max-w-lg h-10 px-2 flex items-center text-white text-center text-md bg-black rounded-xl">
+          Ubicación: <span className=" m-auto text-md">{locData}</span>
         </h3>
       </div>
 
@@ -212,20 +218,32 @@ export default function Picking() {
           Cargar
         </button>
       </div>
-
-      <button
-        // disabled={
-        //   skuData != "" && locData != "" && amountInput > 0 ? false : true
-        // }
-        onClick={submitDataHandler}
-        type="button"
-        className=" bg-lime-600 inline-block rounded-lg bg-primary px-6 pb-2 pt-2.5 mt-6 text-lg font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
+      <div className=" flex items-center justify-around gap-10">
+        <button
+          onClick={handlerButtonHome}
+          type="button"
+          className=" bg-blue-800 inline-block rounded-lg bg-primary px-6 pb-2 pt-2.5 mt-2 text-lg font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
         dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] 
         dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
          disabled:bg-gray-500 disabled:shadow-none disabled:text-gray-700"
-      >
-        Finalizar
-      </button>
+        >
+          Volver
+        </button>
+
+        <button
+          // disabled={
+          //   skuData != "" && locData != "" && amountInput > 0 ? false : true
+          // }
+          onClick={submitDataHandler}
+          type="button"
+          className=" bg-lime-600 inline-block rounded-lg bg-primary px-6 pb-2 pt-2.5 mt-2 text-lg font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
+        dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] 
+        dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
+         disabled:bg-gray-500 disabled:shadow-none disabled:text-gray-700"
+        >
+          Finalizar
+        </button>
+      </div>
     </main>
   );
 }
