@@ -1,10 +1,10 @@
-import { useState } from "preact/hooks";
+
 import { HashRouter, Routes, Route } from "react-router-dom";
 
 import "./app.css";
 
 import Header from "./components/Header";
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import Picking from "./pages/Picking";
 
 export function App() {

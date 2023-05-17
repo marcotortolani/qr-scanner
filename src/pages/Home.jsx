@@ -1,11 +1,14 @@
 import { useState, useEffect } from "preact/hooks";
 import { Link, useNavigate } from "react-router-dom";
 import useLocalStorage from "../helpers/useLocalStorage";
+import debounce from "lodash.debounce";
 
 const userInitial = {
   name: "",
   cart: 0,
 };
+
+const typeMovementInitial = false;
 
 export default function Home() {
   const [user, setUser] = useLocalStorage("userData", userInitial);
@@ -14,7 +17,7 @@ export default function Home() {
     "ingreso"
   );
   const [nameInput, setNameInput] = useState(user.name);
-  const [cartInput, setCartInput] = useState("");
+  const [cartInput, setCartInput] = useState(userInitial.cart);
 
   const navigate = useNavigate();
 
@@ -23,6 +26,7 @@ export default function Home() {
       setTypeMovement("egreso");
     } else {
       setTypeMovement("ingreso");
+      setCartInput(0);
     }
   }
 
@@ -30,7 +34,6 @@ export default function Home() {
     e.preventDefault();
 
     if (e.target.id === "user") {
-      console.log(e.target.value);
       setNameInput(e.target.value);
     }
   }
@@ -38,9 +41,10 @@ export default function Home() {
   function handleCart(e) {
     e.preventDefault();
     if (e.target.value > 0) {
-      setCartInput(e.target.value);
+      console.log(e.target.value);
+      setCartInput(parseInt(e.target.value));
     } else {
-      setCartInput("");
+      setCartInput(0);
     }
   }
 
@@ -50,7 +54,7 @@ export default function Home() {
       cart: 0,
     };
     newUser.name = nameInput;
-    newUser.cart = cartInput ? cartInput : 0;
+    newUser.cart = cartInput ? cartInput : "";
     setUser(newUser);
 
     navigate("/picking");
@@ -99,7 +103,7 @@ export default function Home() {
           type="number"
           name="cart"
           id="cart"
-          value={cartInput}
+          value={cartInput ? cartInput : null}
           disabled={typeMovement === "ingreso"}
           placeholder="Número de Carro: "
         />
@@ -112,7 +116,8 @@ export default function Home() {
             : true
         }
         onClick={handleAccept}
-        type="button"
+        // type="button"
+
         className="inline-block rounded-full bg-primary px-6 pb-2 pt-2.5 text-md font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
         dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] 
         dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]

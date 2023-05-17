@@ -1,11 +1,12 @@
-import { useState, useEffect } from "preact/hooks";
+import { useState, useEffect, useCallback } from "preact/hooks";
 import { useNavigate } from "react-router-dom";
 import QrReader from "react-web-qr-reader";
 import useLocalStorage from "../helpers/useLocalStorage";
+import debounce from "lodash.debounce";
+import axios from "redaxios";
 import useSound from "use-sound";
 
 //import { AxiosProvider, Request, Get, Delete, Head, Post, Put, Patch, withAxios } from 'react-axios';
-import axios from "redaxios";
 
 const elementPicked = {
   sku: "",
@@ -33,12 +34,13 @@ export default function Picking() {
   const [scanOkSound] = useSound("/sounds/scanner-beep.mp3");
   const [scanErrorSound] = useSound("/sounds/8bit-error.mp3");
   const navigate = useNavigate();
+
+  const [typeMovement, setTypeMovement] = useLocalStorage("typeMovement");
+  const [user, setUser] = useLocalStorage("userData");
   const [pickingStored, setPickingStored] = useLocalStorage(
     "pickingStored",
     []
   );
-  const [typeMovement, setTypeMovement] = useLocalStorage("typeMovement");
-  const [user, setUser] = useLocalStorage("userData");
   const [pickingCompleted, setPickingCompleted] = useLocalStorage(
     "pickingCompleted",
     []
@@ -72,9 +74,9 @@ export default function Picking() {
   function handleAmountInput(e) {
     e.preventDefault();
     if (e.target.value > 0) {
-      setAmountInput(e.target.value);
+      setAmountInput(parseInt(e.target.value));
     } else {
-      setAmountInput("");
+      setAmountInput(0);
     }
   }
 
@@ -96,7 +98,27 @@ export default function Picking() {
     setAmountInput(0);
   }
 
-  function handleFinish() {
+  // const submitData = async (event) => {
+  //   const dataReq = pickingCompleted;
+
+  //   try {
+  //     const { data } = await axios.post("https://stock-qrs.deno.dev/", dataReq, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     if (data) {
+  //       setTheData(data);
+  //       console.log(data);
+  //     }
+  //   } catch (error) {
+  //     setError(error);
+  //     console.log(error);
+  //   }
+  // };
+
+  const submitDataHandler = useCallback(() => {
     const date = new Date();
     const TIME_FINISH = `${date.getHours()}:${date.getMinutes()}`;
 
@@ -111,8 +133,8 @@ export default function Picking() {
     };
     setPickingCompleted(newPickingCompleted);
 
-    console.log("picking completed");
     const data = pickingCompleted;
+
     axios
       .post("https://stock-prod.deno.dev/", data, {
         headers: {
@@ -125,37 +147,29 @@ export default function Picking() {
       .catch((error) => {
         console.error(error);
       });
-    /*
-    setPickingStored([]);
-    setPickingCompleted([]);
-    navigate("/");
-    */
-  }
 
-  useEffect(() => {
-    if (pickingCompleted) {
-      // console.log("picking completed");
-      // const data = pickingCompleted;
-      // axios
-      // .post("https://stock-prod.deno.dev/", data, {
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // })
-      // .then((response) => {
-      //   console.log(response.data);
-      // })
-      // .catch((error) => {
-      //   console.error(error);
-      // });
-    }
-  }, [pickingCompleted]);
+    /*
+    setTimeout(() => {
+  
+      setPickingStored([]);
+      setPickingCompleted([]);
+      navigate("/");
+    
+    }, 200);
+    */
+  }, []);
+
+  // useEffect(() => {
+  //   if (pickingCompleted) {
+
+  //   }
+  // }, [pickingCompleted]);
 
   return (
-    <main className="h-full mt-2 p-x-4 flex flex-col items-center justify-around gap-2">
-      <div className="flex items-center gap-10">
+    <main className="h-full mt-2 flex flex-col items-center justify-around gap-2">
+      <div className="w-full h-10 p-2 bg-black flex items-end justify-center gap-10 rounded-xl">
         <div className="flex items-center gap-2">
-          <h1 className=" text-lg font-bold">{user.name}</h1>
+          <h1 className=" text-lg font-light">{user.name}</h1>
 
           {user.cart && (
             <>
@@ -164,7 +178,18 @@ export default function Picking() {
             </>
           )}
         </div>
-        <h5 className="text-sm">{DATE}</h5>
+        <div
+          className={` flex items-center gap-1 text-sm
+          ${
+            typeMovement === "egreso"
+              ? "flex-row-reverse text-red-600"
+              : "text-green-600"
+          } `}
+        >
+          <span className="text-xl">&#x21e8;</span>
+          <h2 className=" uppercase">{typeMovement}</h2>
+        </div>
+        {/* <h5 className="text-sm">{DATE}</h5> */}
       </div>
 
       <QrReader
@@ -188,10 +213,10 @@ export default function Picking() {
           className=" w-32 px-0 pb-2 pt-2.5  text-center text-lg font-medium rounded-3xl"
           onChange={(e) => handleAmountInput(e)}
           type="number"
-          name="quant"
-          id="quant"
+          name="amount"
+          id="amount"
+          value={amountInput > 0 ? amountInput : false}
           placeholder="Cantidad: "
-          value={amountInput > 0 ? amountInput : null}
         />
 
         <button
@@ -201,8 +226,7 @@ export default function Picking() {
           onClick={handleStoreData}
           type="button"
           className=" inline-block rounded-3xl bg-primary px-6 pb-2 pt-2.5 text-md font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
-        dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] 
-        dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]
+        
         bg-blue-800 disabled:bg-gray-500 disabled:shadow-none disabled:text-gray-400"
         >
           Cargar
@@ -213,7 +237,7 @@ export default function Picking() {
         // disabled={
         //   skuData != "" && locData != "" && amountInput > 0 ? false : true
         // }
-        onClick={handleFinish}
+        onClick={submitDataHandler}
         type="button"
         className=" bg-lime-600 inline-block rounded-lg bg-primary px-6 pb-2 pt-2.5 mt-6 text-lg font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] 
         dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] 
