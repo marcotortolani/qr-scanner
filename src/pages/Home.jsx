@@ -61,7 +61,7 @@ export default function Home() {
   }
 
   return (
-    <main className="w-screen max-w-md h-screen flex flex-col items-center justify-center gap-10">
+    <main className="w-screen max-w-md h-full flex flex-col items-center justify-center gap-10">
       <div className=" fixed top-20 flex flex-col items-center gap-1">
         <input
           onClick={handleMovement}
